@@ -118,13 +118,54 @@ public sealed class FindLiteAIEngine : ISemanticSearchEngine
     }
 
     /// <inheritdoc />
-    public Task<IReadOnlyList<SearchResult>> FindSimilarAsync(
+    public async Task<IReadOnlyList<SearchResult>> FindSimilarAsync(
         string collection,
         string documentId,
         SearchOptions? options = null,
         CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        SearchEngineValidator.ValidateCollection(collection);
+
+        if (string.IsNullOrWhiteSpace(documentId))
+        {
+            throw new ArgumentException(
+                "Document identifier cannot be null or empty.",
+                nameof(documentId));
+        }
+
+        SearchOptions resolvedOptions = options ?? new SearchOptions();
+
+        SearchEngineValidator.ValidateSearchOptions(resolvedOptions);
+
+        (SemanticDocument Document, IReadOnlyList<float> Embedding)? sourceItem =
+            await _semanticStore.GetByIdAsync(
+                collection,
+                documentId,
+                cancellationToken);
+
+        if (sourceItem is null)
+        {
+            return [];
+        }
+
+        IReadOnlyList<(SemanticDocument Document, IReadOnlyList<float> Embedding)> indexedItems =
+            await _semanticStore.GetAllAsync(
+                collection,
+                cancellationToken);
+
+        IReadOnlyList<(SemanticDocument Document, IReadOnlyList<float> Embedding)> candidateItems =
+            indexedItems
+                .Where(item => !string.Equals(
+                    item.Document.Id,
+                    documentId,
+                    StringComparison.Ordinal))
+                .ToList();
+
+        return Internal.Services.SearchRankingService.Rank(
+            candidateItems,
+            sourceItem.Value.Document.Text,
+            sourceItem.Value.Embedding,
+            resolvedOptions);
     }
 
     /// <inheritdoc />
