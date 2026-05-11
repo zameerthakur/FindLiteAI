@@ -1,0 +1,24 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <Authors>FindLiteAI Contributors</Authors>
+    <Company>FindLiteAI</Company>
+    <Product>FindLiteAI</Product>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/zameerthakur/FindLiteAI</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/zameerthakur/FindLiteAI</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+</Project>
