@@ -18,7 +18,7 @@ public sealed class SearchResponse
     /// <summary>
     /// Gets or sets optional metadata values.
     /// </summary>
-    public Dictionary<string, string>? Metadata { get; set; }
+    public IReadOnlyDictionary<string, string>? Metadata { get; set; }
 
     /// <summary>
     /// Gets or sets the calculated relevance score.
