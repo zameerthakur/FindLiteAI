@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\FindLiteAI.Core\FindLiteAI.Core.csproj" />
+    <ProjectReference Include="..\..\src\FindLiteAI\FindLiteAI.csproj" />
   </ItemGroup>
 
   <ItemGroup>
