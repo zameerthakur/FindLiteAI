@@ -11,9 +11,9 @@ public sealed class OnnxEmbeddingProviderOptions
     public required string ModelPath { get; set; }
 
     /// <summary>
-    /// Gets or sets the path to the tokenizer JSON file.
+    /// Gets or sets the path to the tokenizer vocabulary file.
     /// </summary>
-    public required string TokenizerPath { get; set; }
+    public required string VocabularyPath { get; set; }
 
     /// <summary>
     /// Gets or sets the maximum token length used during tokenization.
