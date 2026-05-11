@@ -10,4 +10,10 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\FindLiteAI.Core\FindLiteAI.Core.csproj" />
+    <ProjectReference Include="..\..\src\FindLiteAI.Extensions.DependencyInjection\FindLiteAI.Extensions.DependencyInjection.csproj" />
+    <ProjectReference Include="..\..\src\FindLiteAI\FindLiteAI.csproj" />
+  </ItemGroup>
 </Project>

@@ -7,4 +7,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\FindLiteAI.Core\FindLiteAI.Core.csproj" />
+    <ProjectReference Include="..\..\src\FindLiteAI.Extensions.DependencyInjection\FindLiteAI.Extensions.DependencyInjection.csproj" />
+    <ProjectReference Include="..\..\src\FindLiteAI\FindLiteAI.csproj" />
+  </ItemGroup>
+
 </Project>
