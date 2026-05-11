@@ -2,6 +2,7 @@ using FindLiteAI.Core.Abstractions;
 using FindLiteAI.Core.Models;
 using FindLiteAI.Core.Options;
 using FindLiteAI.Core.Results;
+using FindLiteAI.Internal.Validation;
 
 namespace FindLiteAI;
 
@@ -36,6 +37,10 @@ public sealed class FindLiteAIEngine : ISemanticSearchEngine
         SemanticDocument document,
         CancellationToken cancellationToken = default)
     {
+        SearchEngineValidator.ValidateCollection(collection);
+
+        SearchEngineValidator.ValidateDocument(document);
+
         IReadOnlyList<float> embedding =
             await _embeddingProvider.GenerateEmbeddingAsync(
                 document.Text,
@@ -54,6 +59,15 @@ public sealed class FindLiteAIEngine : ISemanticSearchEngine
         IReadOnlyCollection<SemanticDocument> documents,
         CancellationToken cancellationToken = default)
     {
+        SearchEngineValidator.ValidateCollection(collection);
+
+        ArgumentNullException.ThrowIfNull(documents);
+
+        foreach (SemanticDocument document in documents)
+        {
+            SearchEngineValidator.ValidateDocument(document);
+        }
+
         IReadOnlyList<string> texts =
             documents
                 .Select(document => document.Text)
@@ -97,6 +111,15 @@ public sealed class FindLiteAIEngine : ISemanticSearchEngine
         string documentId,
         CancellationToken cancellationToken = default)
     {
+        SearchEngineValidator.ValidateCollection(collection);
+
+        if (string.IsNullOrWhiteSpace(documentId))
+        {
+            throw new ArgumentException(
+                "Document identifier cannot be null or empty.",
+                nameof(documentId));
+        }
+
         return _semanticStore.DeleteAsync(
             collection,
             documentId,
