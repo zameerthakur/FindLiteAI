@@ -86,13 +86,35 @@ public sealed class FindLiteAIEngine : ISemanticSearchEngine
     }
 
     /// <inheritdoc />
-    public Task<IReadOnlyList<SearchResult>> SearchAsync(
+    public async Task<IReadOnlyList<SearchResult>> SearchAsync(
         string collection,
         string query,
         SearchOptions? options = null,
         CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        SearchEngineValidator.ValidateCollection(collection);
+
+        SearchEngineValidator.ValidateQuery(query);
+
+        SearchOptions resolvedOptions = options ?? new SearchOptions();
+
+        SearchEngineValidator.ValidateSearchOptions(resolvedOptions);
+
+        IReadOnlyList<float> queryEmbedding =
+            await _embeddingProvider.GenerateEmbeddingAsync(
+                query,
+                cancellationToken);
+
+        IReadOnlyList<(SemanticDocument Document, IReadOnlyList<float> Embedding)> indexedItems =
+            await _semanticStore.GetAllAsync(
+                collection,
+                cancellationToken);
+
+        return Internal.Services.SearchRankingService.Rank(
+            indexedItems,
+            query,
+            queryEmbedding,
+            resolvedOptions);
     }
 
     /// <inheritdoc />
