@@ -1,6 +1,7 @@
 using FindLiteAI.Core.Models;
 using FindLiteAI.Storage.LiteDb;
 using FluentAssertions;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace FindLiteAI.Tests.Integration;
 
@@ -163,6 +164,7 @@ public sealed class LiteDbSemanticStoreTests
             new LiteDbOptions
             {
                 DatabasePath = databasePath
-            });
+            },
+            NullLogger<LiteDbSemanticStore>.Instance);
     }
 }

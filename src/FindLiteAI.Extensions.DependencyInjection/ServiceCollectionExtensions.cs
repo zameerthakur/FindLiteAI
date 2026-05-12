@@ -53,12 +53,13 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IEmbeddingProvider>(provider =>
             provider.GetRequiredService<OnnxEmbeddingProvider>());
 
-        services.AddSingleton<ISemanticStore>(_ =>
+        services.AddSingleton<ISemanticStore>(provider =>
             new LiteDbSemanticStore(
                 new LiteDbOptions
                 {
                     DatabasePath = options.DatabasePath
-                }));
+                },
+                provider.GetRequiredService<ILogger<LiteDbSemanticStore>>()));
 
         services.AddLogging();
 
