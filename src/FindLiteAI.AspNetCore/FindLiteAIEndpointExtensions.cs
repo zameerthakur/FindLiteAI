@@ -94,6 +94,52 @@ public static class FindLiteAIEndpointExtensions
                 return Results.Ok(response);
             });
 
+        group.MapGet(
+            "/collections/{collection}/documents/{documentId}/similar",
+            async (
+                string collection,
+                string documentId,
+                ISemanticSearchEngine engine,
+                CancellationToken cancellationToken) =>
+            {
+                IReadOnlyList<SearchResult> results =
+                    await engine.FindSimilarAsync(
+                        collection,
+                        documentId,
+                        cancellationToken: cancellationToken);
+
+                IReadOnlyList<SearchResponse> response =
+                    results
+                        .Select(result =>
+                            new SearchResponse
+                            {
+                                Id = result.Document.Id,
+                                Text = result.Document.Text,
+                                Metadata = result.Document.Metadata,
+                                Score = result.Score,
+                                Rank = result.Rank
+                            })
+                        .ToList();
+
+                return Results.Ok(response);
+            });
+
+        group.MapDelete(
+            "/collections/{collection}/documents/{documentId}",
+            async (
+                string collection,
+                string documentId,
+                ISemanticSearchEngine engine,
+                CancellationToken cancellationToken) =>
+            {
+                await engine.DeleteAsync(
+                    collection,
+                    documentId,
+                    cancellationToken);
+
+                return Results.NoContent();
+            });
+
         return app;
     }
 }
