@@ -3,6 +3,7 @@ using FindLiteAI.Core.Options;
 using FindLiteAI.Embeddings.Onnx;
 using FindLiteAI.Storage.LiteDb;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace FindLiteAI.Extensions.DependencyInjection;
 
@@ -57,6 +58,8 @@ public static class ServiceCollectionExtensions
                 {
                     DatabasePath = options.DatabasePath
                 }));
+
+        services.AddLogging();
 
         services.AddSingleton<ISemanticSearchEngine, FindLiteAIEngine>();
 
