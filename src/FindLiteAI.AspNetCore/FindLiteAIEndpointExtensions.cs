@@ -1,11 +1,13 @@
 using FindLiteAI.AspNetCore.Models;
 using FindLiteAI.Core.Abstractions;
+using FindLiteAI.Core.Exceptions;
 using FindLiteAI.Core.Models;
 using FindLiteAI.Core.Options;
 using FindLiteAI.Core.Results;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Logging;
 
 namespace FindLiteAI.AspNetCore;
 
@@ -41,21 +43,53 @@ public static class FindLiteAIEndpointExtensions
                 string collection,
                 AddDocumentRequest request,
                 ISemanticSearchEngine engine,
+                ILoggerFactory loggerFactory,
                 CancellationToken cancellationToken) =>
             {
-                SemanticDocument document = new()
+                ILogger logger =
+                    loggerFactory.CreateLogger("FindLiteAI.AspNetCore");
+
+                try
                 {
-                    Id = request.Id,
-                    Text = request.Text,
-                    Metadata = request.Metadata
-                };
+                    SemanticDocument document = new()
+                    {
+                        Id = request.Id,
+                        Text = request.Text,
+                        Metadata = request.Metadata
+                    };
 
-                await engine.AddAsync(
-                    collection,
-                    document,
-                    cancellationToken);
+                    await engine.AddAsync(
+                        collection,
+                        document,
+                        cancellationToken);
 
-                return Results.Ok();
+                    return Results.Ok();
+                }
+                catch (ArgumentException exception)
+                {
+                    logger.LogWarning(
+                        exception,
+                        "Invalid add document request for collection '{Collection}'.",
+                        collection);
+
+                    return Results.BadRequest(
+                        CreateProblemDetails(
+                            "Invalid request.",
+                            exception.Message,
+                            StatusCodes.Status400BadRequest));
+                }
+                catch (SearchException exception)
+                {
+                    logger.LogError(
+                        exception,
+                        "Failed to add document to collection '{Collection}'.",
+                        collection);
+
+                    return Results.Problem(
+                        title: "FindLiteAI operation failed.",
+                        detail: exception.Message,
+                        statusCode: StatusCodes.Status500InternalServerError);
+                }
             });
 
         group.MapPost(
@@ -64,34 +98,58 @@ public static class FindLiteAIEndpointExtensions
                 string collection,
                 SearchRequest request,
                 ISemanticSearchEngine engine,
+                ILoggerFactory loggerFactory,
                 CancellationToken cancellationToken) =>
             {
-                IReadOnlyList<SearchResult> results =
-                    await engine.SearchAsync(
-                        collection,
-                        request.Query,
-                        new SearchOptions
-                        {
-                            SearchMode = request.SearchMode,
-                            MaxResults = request.MaxResults,
-                            MinimumScore = request.MinimumScore
-                        },
-                        cancellationToken);
+                ILogger logger =
+                    loggerFactory.CreateLogger("FindLiteAI.AspNetCore");
 
-                IReadOnlyList<SearchResponse> response =
-                    results
-                        .Select(result =>
-                            new SearchResponse
+                try
+                {
+                    IReadOnlyList<SearchResult> results =
+                        await engine.SearchAsync(
+                            collection,
+                            request.Query,
+                            new SearchOptions
                             {
-                                Id = result.Document.Id,
-                                Text = result.Document.Text,
-                                Metadata = result.Document.Metadata,
-                                Score = result.Score,
-                                Rank = result.Rank
-                            })
-                        .ToList();
+                                SearchMode = request.SearchMode,
+                                MaxResults = request.MaxResults,
+                                MinimumScore = request.MinimumScore
+                            },
+                            cancellationToken);
 
-                return Results.Ok(response);
+                    IReadOnlyList<SearchResponse> response =
+                        results
+                            .Select(MapSearchResponse)
+                            .ToList();
+
+                    return Results.Ok(response);
+                }
+                catch (ArgumentException exception)
+                {
+                    logger.LogWarning(
+                        exception,
+                        "Invalid search request for collection '{Collection}'.",
+                        collection);
+
+                    return Results.BadRequest(
+                        CreateProblemDetails(
+                            "Invalid request.",
+                            exception.Message,
+                            StatusCodes.Status400BadRequest));
+                }
+                catch (SearchException exception)
+                {
+                    logger.LogError(
+                        exception,
+                        "Search failed for collection '{Collection}'.",
+                        collection);
+
+                    return Results.Problem(
+                        title: "FindLiteAI search failed.",
+                        detail: exception.Message,
+                        statusCode: StatusCodes.Status500InternalServerError);
+                }
             });
 
         group.MapGet(
@@ -100,28 +158,53 @@ public static class FindLiteAIEndpointExtensions
                 string collection,
                 string documentId,
                 ISemanticSearchEngine engine,
+                ILoggerFactory loggerFactory,
                 CancellationToken cancellationToken) =>
             {
-                IReadOnlyList<SearchResult> results =
-                    await engine.FindSimilarAsync(
-                        collection,
+                ILogger logger =
+                    loggerFactory.CreateLogger("FindLiteAI.AspNetCore");
+
+                try
+                {
+                    IReadOnlyList<SearchResult> results =
+                        await engine.FindSimilarAsync(
+                            collection,
+                            documentId,
+                            cancellationToken: cancellationToken);
+
+                    IReadOnlyList<SearchResponse> response =
+                        results
+                            .Select(MapSearchResponse)
+                            .ToList();
+
+                    return Results.Ok(response);
+                }
+                catch (ArgumentException exception)
+                {
+                    logger.LogWarning(
+                        exception,
+                        "Invalid similar search request for collection '{Collection}'.",
+                        collection);
+
+                    return Results.BadRequest(
+                        CreateProblemDetails(
+                            "Invalid request.",
+                            exception.Message,
+                            StatusCodes.Status400BadRequest));
+                }
+                catch (SearchException exception)
+                {
+                    logger.LogError(
+                        exception,
+                        "Similar search failed for document '{DocumentId}' in collection '{Collection}'.",
                         documentId,
-                        cancellationToken: cancellationToken);
+                        collection);
 
-                IReadOnlyList<SearchResponse> response =
-                    results
-                        .Select(result =>
-                            new SearchResponse
-                            {
-                                Id = result.Document.Id,
-                                Text = result.Document.Text,
-                                Metadata = result.Document.Metadata,
-                                Score = result.Score,
-                                Rank = result.Rank
-                            })
-                        .ToList();
-
-                return Results.Ok(response);
+                    return Results.Problem(
+                        title: "FindLiteAI similar search failed.",
+                        detail: exception.Message,
+                        statusCode: StatusCodes.Status500InternalServerError);
+                }
             });
 
         group.MapDelete(
@@ -130,16 +213,75 @@ public static class FindLiteAIEndpointExtensions
                 string collection,
                 string documentId,
                 ISemanticSearchEngine engine,
+                ILoggerFactory loggerFactory,
                 CancellationToken cancellationToken) =>
             {
-                await engine.DeleteAsync(
-                    collection,
-                    documentId,
-                    cancellationToken);
+                ILogger logger =
+                    loggerFactory.CreateLogger("FindLiteAI.AspNetCore");
 
-                return Results.NoContent();
+                try
+                {
+                    await engine.DeleteAsync(
+                        collection,
+                        documentId,
+                        cancellationToken);
+
+                    return Results.NoContent();
+                }
+                catch (ArgumentException exception)
+                {
+                    logger.LogWarning(
+                        exception,
+                        "Invalid delete request for collection '{Collection}'.",
+                        collection);
+
+                    return Results.BadRequest(
+                        CreateProblemDetails(
+                            "Invalid request.",
+                            exception.Message,
+                            StatusCodes.Status400BadRequest));
+                }
+                catch (SearchException exception)
+                {
+                    logger.LogError(
+                        exception,
+                        "Delete failed for document '{DocumentId}' in collection '{Collection}'.",
+                        documentId,
+                        collection);
+
+                    return Results.Problem(
+                        title: "FindLiteAI delete failed.",
+                        detail: exception.Message,
+                        statusCode: StatusCodes.Status500InternalServerError);
+                }
             });
 
         return app;
+    }
+
+    private static SearchResponse MapSearchResponse(
+        SearchResult result)
+    {
+        return new SearchResponse
+        {
+            Id = result.Document.Id,
+            Text = result.Document.Text,
+            Metadata = result.Document.Metadata,
+            Score = result.Score,
+            Rank = result.Rank
+        };
+    }
+
+    private static object CreateProblemDetails(
+        string title,
+        string detail,
+        int statusCode)
+    {
+        return new
+        {
+            title,
+            detail,
+            status = statusCode
+        };
     }
 }
