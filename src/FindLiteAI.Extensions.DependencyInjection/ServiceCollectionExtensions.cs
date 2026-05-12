@@ -38,16 +38,17 @@ public static class ServiceCollectionExtensions
         services.AddSingleton(options);
 
         services.AddSingleton(provider =>
-            new OnnxEmbeddingProvider(
-                new OnnxEmbeddingProviderOptions
-                {
-                    ModelPath = options.ModelPath
-                        ?? throw new InvalidOperationException(
-                            "ModelPath must be configured for FindLiteAI."),
-                    VocabularyPath = ResolveVocabularyPath(options),
-                    MaxTokenLength = 256,
-                    WarmupOnLoad = true
-                }));
+             new OnnxEmbeddingProvider(
+                 new OnnxEmbeddingProviderOptions
+                 {
+                     ModelPath = options.ModelPath
+                         ?? throw new InvalidOperationException(
+                             "ModelPath must be configured for FindLiteAI."),
+                     VocabularyPath = ResolveVocabularyPath(options),
+                     MaxTokenLength = 256,
+                     WarmupOnLoad = true
+                 },
+                 provider.GetRequiredService<ILogger<OnnxEmbeddingProvider>>()));
 
         services.AddSingleton<IEmbeddingProvider>(provider =>
             provider.GetRequiredService<OnnxEmbeddingProvider>());

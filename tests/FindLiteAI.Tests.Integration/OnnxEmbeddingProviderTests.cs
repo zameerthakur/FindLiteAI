@@ -1,5 +1,6 @@
 using FindLiteAI.Embeddings.Onnx;
 using FluentAssertions;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace FindLiteAI.Tests.Integration;
 
@@ -90,6 +91,7 @@ public sealed class OnnxEmbeddingProviderTests
                 VocabularyPath = VocabularyPath,
                 MaxTokenLength = 256,
                 WarmupOnLoad = true
-            });
+            },
+            NullLogger<OnnxEmbeddingProvider>.Instance);
     }
 }
