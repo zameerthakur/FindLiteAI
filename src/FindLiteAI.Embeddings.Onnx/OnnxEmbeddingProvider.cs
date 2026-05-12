@@ -22,10 +22,12 @@ public sealed class OnnxEmbeddingProvider : IEmbeddingProvider, IDisposable
     /// <param name="options">The ONNX embedding provider configuration.</param>
     /// <param name="logger">The logger instance.</param>
     public OnnxEmbeddingProvider(
-        OnnxEmbeddingProviderOptions options,
-        ILogger<OnnxEmbeddingProvider> logger)
+    OnnxEmbeddingProviderOptions options,
+    ILogger<OnnxEmbeddingProvider> logger)
     {
         ArgumentNullException.ThrowIfNull(options);
+
+        OnnxOptionsValidator.Validate(options);
 
         _logger = logger;
 
