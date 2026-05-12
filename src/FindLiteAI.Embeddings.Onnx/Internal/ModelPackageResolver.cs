@@ -5,7 +5,7 @@ namespace FindLiteAI.Embeddings.Onnx.Internal;
 /// <summary>
 /// Resolves runtime file paths from an extracted model package.
 /// </summary>
-internal static class ModelPackageResolver
+public static class ModelPackageResolver
 {
     /// <summary>
     /// Resolves ONNX provider options from an extracted model package directory.

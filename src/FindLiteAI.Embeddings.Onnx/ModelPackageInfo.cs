@@ -51,9 +51,9 @@ public sealed class ModelPackageInfo
     public required string Source { get; set; }
 
     /// <summary>
-    /// Gets or sets the ONNX model source URL.
+    /// Gets or sets the FindLiteAI optimized model package source URL.
     /// </summary>
-    public required string OnnxSource { get; set; }
+    public required string PackageSource { get; set; }
 
     /// <summary>
     /// Gets or sets the package optimization target.
