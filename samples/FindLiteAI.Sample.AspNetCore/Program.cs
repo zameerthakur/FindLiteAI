@@ -1,8 +1,14 @@
 using FindLiteAI.AspNetCore;
 using FindLiteAI.Extensions.DependencyInjection;
+using System.Text.Json.Serialization;
 
 WebApplicationBuilder builder =
     WebApplication.CreateBuilder(args);
+
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
 builder.Services.AddFindLiteAI(options =>
 {

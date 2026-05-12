@@ -1,0 +1,96 @@
+@FindLiteAI_HostAddress = https://localhost:7014
+
+### Root Health Check
+
+GET {{FindLiteAI_HostAddress}}/
+Accept: application/json
+
+###
+
+### Add Document - Login Failure
+
+POST {{FindLiteAI_HostAddress}}/api/findliteai/collections/logs/documents
+Content-Type: application/json
+
+{
+  "id": "log-1",
+  "text": "SFTP authentication failed for remote user.",
+  "metadata": {
+    "module": "SFTP",
+    "severity": "High"
+  }
+}
+
+###
+
+### Add Document - Database Timeout
+
+POST {{FindLiteAI_HostAddress}}/api/findliteai/collections/logs/documents
+Content-Type: application/json
+
+{
+  "id": "log-2",
+  "text": "SQL database timeout occurred while executing query.",
+  "metadata": {
+    "module": "Database",
+    "severity": "Medium"
+  }
+}
+
+###
+
+### Add Document - Email Relay
+
+POST {{FindLiteAI_HostAddress}}/api/findliteai/collections/logs/documents
+Content-Type: application/json
+
+{
+  "id": "log-3",
+  "text": "SMTP email relay accepted outgoing message.",
+  "metadata": {
+    "module": "SMTP",
+    "severity": "Low"
+  }
+}
+
+###
+
+### Hybrid Search - Login Issue
+
+POST {{FindLiteAI_HostAddress}}/api/findliteai/collections/logs/search
+Content-Type: application/json
+
+{
+  "query": "login issue",
+  "searchMode": "Hybrid",
+  "maxResults": 5,
+  "minimumScore": 0.10
+}
+
+###
+
+### Semantic Search - Database Problem
+
+POST {{FindLiteAI_HostAddress}}/api/findliteai/collections/logs/search
+Content-Type: application/json
+
+{
+  "query": "database connection issue",
+  "searchMode": "Semantic",
+  "maxResults": 5,
+  "minimumScore": 0.10
+}
+
+###
+
+### Keyword Search - SMTP
+
+POST {{FindLiteAI_HostAddress}}/api/findliteai/collections/logs/search
+Content-Type: application/json
+
+{
+  "query": "smtp",
+  "searchMode": "Keyword",
+  "maxResults": 5,
+  "minimumScore": 0.10
+}
