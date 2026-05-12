@@ -4,6 +4,7 @@ using FindLiteAI.Core.Options;
 using FindLiteAI.Core.Results;
 using FindLiteAI.Tests.Core.Fakes;
 using FluentAssertions;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace FindLiteAI.Tests.Core;
 
@@ -158,6 +159,7 @@ public sealed class FindLiteAIEngineTests
     {
         return new FindLiteAIEngine(
             new FakeEmbeddingProvider(),
-            new InMemorySemanticStore());
+            new InMemorySemanticStore(),
+            NullLogger<FindLiteAIEngine>.Instance);
     }
 }

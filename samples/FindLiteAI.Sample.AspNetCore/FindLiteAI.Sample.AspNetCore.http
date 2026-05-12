@@ -94,3 +94,31 @@ Content-Type: application/json
   "maxResults": 5,
   "minimumScore": 0.10
 }
+
+###
+
+### Similar Search - Find documents similar to Login Failure
+
+GET {{FindLiteAI_HostAddress}}/api/findliteai/collections/logs/documents/log-1/similar
+Accept: application/json
+
+###
+
+### Delete Document - Email Relay
+
+DELETE {{FindLiteAI_HostAddress}}/api/findliteai/collections/logs/documents/log-3
+Accept: application/json
+
+###
+
+### Search After Delete - SMTP
+
+POST {{FindLiteAI_HostAddress}}/api/findliteai/collections/logs/search
+Content-Type: application/json
+
+{
+  "query": "smtp",
+  "searchMode": "Keyword",
+  "maxResults": 5,
+  "minimumScore": 0.10
+}
