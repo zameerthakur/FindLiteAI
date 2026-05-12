@@ -25,10 +25,12 @@ public sealed class LiteDbSemanticStore : ISemanticStore, IDisposable
     /// The logger instance.
     /// </param>
     public LiteDbSemanticStore(
-        LiteDbOptions options,
-        ILogger<LiteDbSemanticStore> logger)
+     LiteDbOptions options,
+     ILogger<LiteDbSemanticStore> logger)
     {
         ArgumentNullException.ThrowIfNull(options);
+
+        LiteDbOptionsValidator.Validate(options);
 
         _logger = logger;
 
