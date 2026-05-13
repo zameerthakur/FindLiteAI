@@ -11,13 +11,20 @@ namespace FindLiteAI.Tests.Integration;
 public sealed class ModelPackageExtractorTests
 {
     /// <summary>
-    /// Verifies that a valid ZIP package can be extracted.
+    /// Verifies that a valid ZIP package can be extracted and resolves the inner model folder.
     /// </summary>
     [Fact]
-    public void Extract_WhenZipIsValid_ShouldExtractFiles()
+    public void Extract_WhenZipIsValid_ShouldReturnInnerModelDirectory()
     {
         string sourceDirectory =
             Directory.CreateTempSubdirectory("findliteai-zip-source-").FullName;
+
+        string modelDirectory =
+            Path.Combine(
+                sourceDirectory,
+                "all-MiniLM-L6-v2");
+
+        Directory.CreateDirectory(modelDirectory);
 
         string zipPath =
             Path.Combine(
@@ -30,11 +37,11 @@ public sealed class ModelPackageExtractorTests
                 $"findliteai-extract-{Guid.NewGuid():N}");
 
         File.WriteAllText(
-            Path.Combine(sourceDirectory, "MODEL_INFO.json"),
+            Path.Combine(modelDirectory, "MODEL_INFO.json"),
             "{}");
 
         File.WriteAllText(
-            Path.Combine(sourceDirectory, "vocab.txt"),
+            Path.Combine(modelDirectory, "vocab.txt"),
             "test");
 
         ZipFile.CreateFromDirectory(
@@ -46,15 +53,18 @@ public sealed class ModelPackageExtractorTests
                 zipPath,
                 targetDirectory);
 
-        extractedDirectory.Should().Be(targetDirectory);
+        extractedDirectory.Should().Be(
+            Path.Combine(
+                targetDirectory,
+                "all-MiniLM-L6-v2"));
 
         File.Exists(
-                Path.Combine(targetDirectory, "MODEL_INFO.json"))
+                Path.Combine(extractedDirectory, "MODEL_INFO.json"))
             .Should()
             .BeTrue();
 
         File.Exists(
-                Path.Combine(targetDirectory, "vocab.txt"))
+                Path.Combine(extractedDirectory, "vocab.txt"))
             .Should()
             .BeTrue();
     }
@@ -82,13 +92,31 @@ public sealed class ModelPackageExtractorTests
     /// Verifies that an existing target directory is reused when overwrite is false.
     /// </summary>
     [Fact]
-    public void Extract_WhenTargetExistsAndOverwriteIsFalse_ShouldReturnExistingDirectory()
+    public void Extract_WhenTargetExistsAndOverwriteIsFalse_ShouldReturnExistingModelDirectory()
     {
         string targetDirectory =
             Directory.CreateTempSubdirectory("findliteai-existing-").FullName;
 
+        string existingModelDirectory =
+            Path.Combine(
+                targetDirectory,
+                "all-MiniLM-L6-v2");
+
+        Directory.CreateDirectory(existingModelDirectory);
+
+        File.WriteAllText(
+            Path.Combine(existingModelDirectory, "MODEL_INFO.json"),
+            "{}");
+
         string sourceDirectory =
             Directory.CreateTempSubdirectory("findliteai-zip-source-").FullName;
+
+        string modelDirectory =
+            Path.Combine(
+                sourceDirectory,
+                "all-MiniLM-L6-v2");
+
+        Directory.CreateDirectory(modelDirectory);
 
         string zipPath =
             Path.Combine(
@@ -96,7 +124,7 @@ public sealed class ModelPackageExtractorTests
                 $"findliteai-model-{Guid.NewGuid():N}.zip");
 
         File.WriteAllText(
-            Path.Combine(sourceDirectory, "MODEL_INFO.json"),
+            Path.Combine(modelDirectory, "MODEL_INFO.json"),
             "{}");
 
         ZipFile.CreateFromDirectory(
@@ -109,6 +137,6 @@ public sealed class ModelPackageExtractorTests
                 targetDirectory,
                 overwrite: false);
 
-        extractedDirectory.Should().Be(targetDirectory);
+        extractedDirectory.Should().Be(existingModelDirectory);
     }
 }

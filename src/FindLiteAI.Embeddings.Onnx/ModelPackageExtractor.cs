@@ -21,15 +21,54 @@ public static class ModelPackageExtractor
     /// A value indicating whether an existing target directory should be overwritten.
     /// </param>
     /// <returns>
-    /// The extracted model directory path.
+    /// The extracted model directory containing MODEL_INFO.json.
     /// </returns>
     /// <exception cref="SearchException">
-    /// Thrown when the ZIP package cannot be extracted.
+    /// Thrown when the ZIP package cannot be extracted or resolved.
     /// </exception>
     public static string Extract(
         string zipPath,
         string targetDirectory,
         bool overwrite = false)
+    {
+        ValidateInputs(
+            zipPath,
+            targetDirectory);
+
+        try
+        {
+            if (Directory.Exists(targetDirectory))
+            {
+                if (!overwrite)
+                {
+                    return ResolveModelDirectory(targetDirectory);
+                }
+
+                Directory.Delete(
+                    targetDirectory,
+                    recursive: true);
+            }
+
+            Directory.CreateDirectory(targetDirectory);
+
+            ZipFile.ExtractToDirectory(
+                zipPath,
+                targetDirectory,
+                overwriteFiles: true);
+
+            return ResolveModelDirectory(targetDirectory);
+        }
+        catch (Exception exception) when (exception is not SearchException)
+        {
+            throw new SearchException(
+                $"Failed to extract model ZIP package '{zipPath}' to '{targetDirectory}'.",
+                exception);
+        }
+    }
+
+    private static void ValidateInputs(
+        string zipPath,
+        string targetDirectory)
     {
         if (string.IsNullOrWhiteSpace(zipPath))
         {
@@ -55,35 +94,45 @@ public static class ModelPackageExtractor
             throw new SearchException(
                 "Model extraction target directory must be configured.");
         }
+    }
 
-        try
+    private static string ResolveModelDirectory(
+        string extractionDirectory)
+    {
+        string directModelInfoPath =
+            Path.Combine(
+                extractionDirectory,
+                "MODEL_INFO.json");
+
+        if (File.Exists(directModelInfoPath))
         {
-            if (Directory.Exists(targetDirectory))
-            {
-                if (!overwrite)
-                {
-                    return targetDirectory;
-                }
-
-                Directory.Delete(
-                    targetDirectory,
-                    recursive: true);
-            }
-
-            Directory.CreateDirectory(targetDirectory);
-
-            ZipFile.ExtractToDirectory(
-                zipPath,
-                targetDirectory,
-                overwriteFiles: true);
-
-            return targetDirectory;
+            return extractionDirectory;
         }
-        catch (Exception exception) when (exception is not SearchException)
+
+        string[] childDirectories =
+            Directory.GetDirectories(extractionDirectory);
+
+        string[] modelDirectories =
+            childDirectories
+                .Where(directory =>
+                    File.Exists(
+                        Path.Combine(
+                            directory,
+                            "MODEL_INFO.json")))
+                .ToArray();
+
+        if (modelDirectories.Length == 1)
+        {
+            return modelDirectories[0];
+        }
+
+        if (modelDirectories.Length > 1)
         {
             throw new SearchException(
-                $"Failed to extract model ZIP package '{zipPath}' to '{targetDirectory}'.",
-                exception);
+                $"Multiple model directories containing MODEL_INFO.json were found in '{extractionDirectory}'.");
         }
+
+        throw new SearchException(
+            $"No model directory containing MODEL_INFO.json was found in '{extractionDirectory}'.");
     }
 }
