@@ -38,4 +38,31 @@ public sealed class FindLiteAIDependencyInjectionTests
 
         engine.Should().NotBeNull();
     }
+
+    /// <summary>
+    /// Verifies that FindLiteAI can resolve services using an extracted model package directory.
+    /// </summary>
+    [Fact]
+    public void AddFindLiteAI_WhenModelPackageDirectoryIsConfigured_ShouldResolveSemanticSearchEngine()
+    {
+        string databasePath = Path.Combine(
+            Path.GetTempPath(),
+            $"findliteai-di-package-{Guid.NewGuid():N}.db");
+
+        ServiceCollection services = new();
+
+        services.AddFindLiteAI(options =>
+        {
+            options.DatabasePath = databasePath;
+            options.ModelCacheDirectory =
+                @"D:\AIModels\FindLiteAI\all-MiniLM-L6-v2";
+        });
+
+        using ServiceProvider provider = services.BuildServiceProvider();
+
+        ISemanticSearchEngine engine =
+            provider.GetRequiredService<ISemanticSearchEngine>();
+
+        engine.Should().NotBeNull();
+    }
 }
