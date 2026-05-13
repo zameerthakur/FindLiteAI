@@ -17,7 +17,7 @@ public static class FindLiteAIModels
         MinimumRamGb = 4,
         RecommendedRamGb = 8,
         Source = "https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2",
-        PackageSource = "https://github.com/zameerthakur/FindLiteAI/releases/download/v1/all-MiniLM-L6-v2.zip",
+        PackageSource = "https://github.com/zameerthakur/FindLiteAI/releases/download/v1/findliteai-minilm-v1.zip",
         License = "Apache-2.0"
     };
 
@@ -33,7 +33,7 @@ public static class FindLiteAIModels
         MinimumRamGb = 8,
         RecommendedRamGb = 16,
         Source = "https://huggingface.co/sentence-transformers/all-mpnet-base-v2",
-        PackageSource = "https://github.com/zameerthakur/FindLiteAI/releases/download/v1/all-mpnet-base-v2.zip",
+        PackageSource = "https://github.com/zameerthakur/FindLiteAI/releases/download/v1/findliteai-mpnet-v1.zip",
         License = "Apache-2.0"
     };
 
@@ -49,7 +49,7 @@ public static class FindLiteAIModels
         MinimumRamGb = 8,
         RecommendedRamGb = 16,
         Source = "https://huggingface.co/Snowflake/snowflake-arctic-embed-xs",
-        PackageSource = "https://github.com/zameerthakur/FindLiteAI/releases/download/v1/arctic-embed-xs.zip",
+        PackageSource = "https://github.com/zameerthakur/FindLiteAI/releases/download/v1/findliteai-arctic-xs-v1.zip",
         License = "Apache-2.0"
     };
 
