@@ -171,3 +171,32 @@ Content-Type: application/json
   "maxResults": 5,
   "minimumScore": 0.10
 }
+
+###
+
+### Add Document - Auto Generated ID
+
+POST {{FindLiteAI_HostAddress}}/api/findliteai/collections/logs/documents
+Content-Type: application/json
+
+{
+  "text": "VPN connection failed during remote login.",
+  "metadata": {
+    "module": "VPN",
+    "severity": "Medium"
+  }
+}
+
+###
+
+### Hybrid Search - Remote Login
+
+POST {{FindLiteAI_HostAddress}}/api/findliteai/collections/logs/search
+Content-Type: application/json
+
+{
+  "query": "remote login",
+  "searchMode": "Hybrid",
+  "maxResults": 5,
+  "minimumScore": 0.10
+}
