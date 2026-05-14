@@ -93,6 +93,65 @@ public static class FindLiteAIEndpointExtensions
             });
 
         group.MapPost(
+            "/collections/{collection}/documents/batch",
+            async (
+                string collection,
+                AddDocumentsRequest request,
+                ISemanticSearchEngine engine,
+                ILoggerFactory loggerFactory,
+                CancellationToken cancellationToken) =>
+            {
+                ILogger logger =
+                    loggerFactory.CreateLogger("FindLiteAI.AspNetCore");
+
+                try
+                {
+                    IReadOnlyList<SemanticDocument> documents =
+                        request.Documents
+                            .Select(document =>
+                                new SemanticDocument
+                                {
+                                    Id = document.Id,
+                                    Text = document.Text,
+                                    Metadata = document.Metadata
+                                })
+                            .ToList();
+
+                    await engine.AddRangeAsync(
+                        collection,
+                        documents,
+                        cancellationToken);
+
+                    return Results.Ok();
+                }
+                catch (ArgumentException exception)
+                {
+                    logger.LogWarning(
+                        exception,
+                        "Invalid batch add request for collection '{Collection}'.",
+                        collection);
+
+                    return Results.BadRequest(
+                        CreateProblemDetails(
+                            "Invalid request.",
+                            exception.Message,
+                            StatusCodes.Status400BadRequest));
+                }
+                catch (SearchException exception)
+                {
+                    logger.LogError(
+                        exception,
+                        "Failed to add documents to collection '{Collection}'.",
+                        collection);
+
+                    return Results.Problem(
+                        title: "FindLiteAI batch add failed.",
+                        detail: exception.Message,
+                        statusCode: StatusCodes.Status500InternalServerError);
+                }
+            });
+
+        group.MapPost(
             "/collections/{collection}/search",
             async (
                 string collection,

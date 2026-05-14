@@ -55,6 +55,48 @@ Content-Type: application/json
 
 ###
 
+### Batch Add Documents
+
+POST {{FindLiteAI_HostAddress}}/api/findliteai/collections/logs/documents/batch
+Content-Type: application/json
+
+{
+  "documents": [
+    {
+      "id": "log-4",
+      "text": "User password validation failed during SSH login.",
+      "metadata": {
+        "module": "SSH",
+        "severity": "High"
+      }
+    },
+    {
+      "id": "log-5",
+      "text": "Database connection pool exhausted.",
+      "metadata": {
+        "module": "Database",
+        "severity": "Medium"
+      }
+    }
+  ]
+}
+
+###
+
+### Hybrid Search - SSH Login
+
+POST {{FindLiteAI_HostAddress}}/api/findliteai/collections/logs/search
+Content-Type: application/json
+
+{
+  "query": "ssh login",
+  "searchMode": "Hybrid",
+  "maxResults": 5,
+  "minimumScore": 0.10
+}
+
+###
+
 ### Hybrid Search - Login Issue
 
 POST {{FindLiteAI_HostAddress}}/api/findliteai/collections/logs/search
