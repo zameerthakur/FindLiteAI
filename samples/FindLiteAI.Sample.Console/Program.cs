@@ -18,13 +18,22 @@ foreach (FindLiteAIModelDefinition model in FindLiteAIModels.GetAll())
     Console.WriteLine($"Testing model: {model.DisplayName}");
     Console.WriteLine($"Profile: {model.Profile}");
 
+    IProgress<string> progress =
+        new Progress<string>(message =>
+            Console.WriteLine($"  {message}"));
+
+    Console.WriteLine("  Installing model package...");
+
     string modelDirectory =
         await ModelInstallService.InstallAsync(
             model,
             cacheDirectory,
-            overwrite: false);
+            overwrite: false,
+            progress);
 
-    Console.WriteLine($"Model directory: {modelDirectory}");
+    Console.WriteLine($"  Model directory: {modelDirectory}");
+
+    Console.WriteLine("  Loading provider...");
 
     using OnnxEmbeddingProvider provider =
         OnnxEmbeddingProviderFactory.FromInstalledModel(
@@ -34,13 +43,15 @@ foreach (FindLiteAIModelDefinition model in FindLiteAIModels.GetAll())
             maxTokenLength: 256,
             warmupOnLoad: true);
 
+    Console.WriteLine("  Generating embedding...");
+
     IReadOnlyList<float> embedding =
         await provider.GenerateEmbeddingAsync(
             "SFTP authentication failed for remote user.");
 
-    Console.WriteLine($"Embedding dimensions: {embedding.Count}");
-    Console.WriteLine($"Expected dimensions: {model.Dimensions}");
-    Console.WriteLine($"First 5 values: {string.Join(", ", embedding.Take(5))}");
+    Console.WriteLine($"  Embedding dimensions: {embedding.Count}");
+    Console.WriteLine($"  Expected dimensions: {model.Dimensions}");
+    Console.WriteLine($"  First 5 values: {string.Join(", ", embedding.Take(5))}");
 
     if (embedding.Count != model.Dimensions)
     {
@@ -48,7 +59,8 @@ foreach (FindLiteAIModelDefinition model in FindLiteAIModels.GetAll())
             $"Model '{model.Id}' returned {embedding.Count} dimensions, expected {model.Dimensions}.");
     }
 
-    Console.WriteLine("Status: OK");
+    Console.WriteLine("  Status: OK");
+    Console.WriteLine("  Done.");
     Console.WriteLine();
 }
 

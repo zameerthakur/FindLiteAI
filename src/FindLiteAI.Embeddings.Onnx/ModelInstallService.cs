@@ -16,18 +16,19 @@ public static class ModelInstallService
     /// <param name="overwrite">
     /// A value indicating whether an existing extracted model package should be overwritten.
     /// </param>
+    /// <param name="progress">
+    /// Optional progress reporter.
+    /// </param>
     /// <param name="cancellationToken">
     /// The cancellation token.
     /// </param>
     /// <returns>
     /// The extracted model directory containing MODEL_INFO.json.
     /// </returns>
-    /// <exception cref="SearchException">
-    /// Thrown when model installation fails.
-    /// </exception>
     public static async Task<string> InstallAsync(
         FindLiteAIModelDefinition model,
         bool overwrite = false,
+        IProgress<string>? progress = null,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(model);
@@ -39,6 +40,7 @@ public static class ModelInstallService
             model,
             cacheDirectory,
             overwrite,
+            progress,
             cancellationToken);
     }
 
@@ -54,6 +56,9 @@ public static class ModelInstallService
     /// <param name="overwrite">
     /// A value indicating whether an existing extracted model package should be overwritten.
     /// </param>
+    /// <param name="progress">
+    /// Optional progress reporter.
+    /// </param>
     /// <param name="cancellationToken">
     /// The cancellation token.
     /// </param>
@@ -67,6 +72,7 @@ public static class ModelInstallService
         FindLiteAIModelDefinition model,
         string cacheDirectory,
         bool overwrite = false,
+        IProgress<string>? progress = null,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(model);
@@ -76,6 +82,9 @@ public static class ModelInstallService
             throw new SearchException(
                 "Model cache directory must be configured.");
         }
+
+        progress?.Report(
+            $"Preparing model cache for '{model.DisplayName}'.");
 
         Directory.CreateDirectory(cacheDirectory);
 
@@ -88,6 +97,9 @@ public static class ModelInstallService
             !overwrite &&
             ContainsModelInfo(finalModelDirectory))
         {
+            progress?.Report(
+                $"Using existing model package '{model.DisplayName}'.");
+
             return finalModelDirectory;
         }
 
@@ -103,10 +115,16 @@ public static class ModelInstallService
 
         try
         {
+            progress?.Report(
+                $"Downloading model package '{model.DisplayName}'.");
+
             await ModelDownloadService.DownloadAsync(
                 model,
                 zipPath,
                 cancellationToken);
+
+            progress?.Report(
+                $"Extracting model package '{model.DisplayName}'.");
 
             string extractedModelDirectory =
                 ModelPackageExtractor.Extract(
@@ -124,6 +142,9 @@ public static class ModelInstallService
             Directory.Move(
                 extractedModelDirectory,
                 finalModelDirectory);
+
+            progress?.Report(
+                $"Model package '{model.DisplayName}' installed successfully.");
 
             return finalModelDirectory;
         }
