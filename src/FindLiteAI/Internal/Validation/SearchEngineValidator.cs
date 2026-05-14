@@ -60,14 +60,7 @@ internal static class SearchEngineValidator
     /// </exception>
     public static void ValidateDocument(SemanticDocument document)
     {
-        ArgumentNullException.ThrowIfNull(document);
-
-        if (string.IsNullOrWhiteSpace(document.Id))
-        {
-            throw new ArgumentException(
-                "Document identifier cannot be null or empty.",
-                nameof(document));
-        }
+        ArgumentNullException.ThrowIfNull(document);        
 
         if (string.IsNullOrWhiteSpace(document.Text))
         {

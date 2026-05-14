@@ -7,8 +7,9 @@ public sealed class SemanticDocument
 {
     /// <summary>
     /// Gets or sets the unique document identifier.
+    /// If not provided, FindLiteAI generates one automatically.
     /// </summary>
-    public required string Id { get; set; }
+    public string? Id { get; set; }
 
     /// <summary>
     /// Gets or sets the searchable document content.

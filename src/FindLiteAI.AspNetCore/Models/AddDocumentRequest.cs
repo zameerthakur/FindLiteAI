@@ -6,9 +6,10 @@ namespace FindLiteAI.AspNetCore.Models;
 public sealed class AddDocumentRequest
 {
     /// <summary>
-    /// Gets or sets the document identifier.
+    /// Gets or sets the optional document identifier.
+    /// If not provided, FindLiteAI generates one automatically.
     /// </summary>
-    public required string Id { get; set; }
+    public string? Id { get; set; }
 
     /// <summary>
     /// Gets or sets the searchable document text.

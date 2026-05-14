@@ -162,4 +162,24 @@ public sealed class FindLiteAIEngineTests
             new InMemorySemanticStore(),
             NullLogger<FindLiteAIEngine>.Instance);
     }
+
+    /// <summary>
+    /// Verifies that a document identifier is generated when no identifier is provided.
+    /// </summary>
+    [Fact]
+    public async Task AddAsync_WhenDocumentIdIsMissing_ShouldGenerateDocumentId()
+    {
+        FindLiteAIEngine engine = CreateEngine();
+
+        SemanticDocument document = new()
+        {
+            Text = "SMTP email relay failed."
+        };
+
+        await engine.AddAsync(
+            "logs",
+            document);
+
+        document.Id.Should().NotBeNullOrWhiteSpace();
+    }
 }

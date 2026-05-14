@@ -44,6 +44,8 @@ public sealed class FindLiteAIEngine : ISemanticSearchEngine
             SearchEngineValidator.ValidateCollection(collection);
             SearchEngineValidator.ValidateDocument(document);
 
+            EnsureDocumentIds([document]);
+
             _logger.LogDebug(
                 "Indexing document '{DocumentId}' in collection '{Collection}'.",
                 document.Id,
@@ -67,14 +69,19 @@ public sealed class FindLiteAIEngine : ISemanticSearchEngine
         }
         catch (Exception exception) when (exception is not SearchException)
         {
+            string documentId =
+                string.IsNullOrWhiteSpace(document.Id)
+                    ? "auto-generated"
+                    : document.Id;
+
             _logger.LogError(
                 exception,
                 "Failed to index document '{DocumentId}' in collection '{Collection}'.",
-                document.Id,
+                documentId,
                 collection);
 
             throw new SearchException(
-                $"Failed to index document '{document.Id}' in collection '{collection}'.",
+                $"Failed to index document '{documentId}' in collection '{collection}'.",
                 exception);
         }
     }
@@ -94,6 +101,8 @@ public sealed class FindLiteAIEngine : ISemanticSearchEngine
             {
                 SearchEngineValidator.ValidateDocument(document);
             }
+
+            EnsureDocumentIds(documents);
 
             _logger.LogInformation(
                 "Indexing {DocumentCount} documents in collection '{Collection}'.",
@@ -315,6 +324,26 @@ public sealed class FindLiteAIEngine : ISemanticSearchEngine
             throw new SearchException(
                 $"Failed to delete document '{documentId}' from collection '{collection}'.",
                 exception);
+        }
+    }
+
+    /// <summary>
+    /// Ensures that all documents contain valid identifiers.
+    /// Automatically generates identifiers for documents that do not provide one.
+    /// </summary>
+    /// <param name="documents">
+    /// The documents to validate.
+    /// </param>
+    private static void EnsureDocumentIds(
+        IEnumerable<SemanticDocument> documents)
+    {
+        foreach (SemanticDocument document in documents)
+        {
+            if (string.IsNullOrWhiteSpace(document.Id))
+            {
+                document.Id =
+                    Guid.NewGuid().ToString("N");
+            }
         }
     }
 }
