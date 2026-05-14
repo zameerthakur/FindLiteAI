@@ -1,4 +1,5 @@
 using FindLiteAI.AspNetCore;
+using FindLiteAI.Embeddings.Onnx;
 using FindLiteAI.Extensions.DependencyInjection;
 using System.Text.Json.Serialization;
 
@@ -10,12 +11,26 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
+string cacheDirectory =
+    Path.Combine(
+        Path.GetTempPath(),
+        "FindLiteAI",
+        "Models");
+
+await ModelInstallService.InstallAsync(
+    FindLiteAIModels.MiniLm,
+    cacheDirectory,
+    overwrite: false);
+
+string modelDirectory =
+    Path.Combine(
+        cacheDirectory,
+        FindLiteAIModels.MiniLm.Id);
+
 builder.Services.AddFindLiteAI(options =>
 {
     options.DatabasePath = "findliteai-sample.db";
-
-    options.ModelPath =
-        @"D:\AIModels\FindLiteAI\all-MiniLM-L6-v2\model.onnx";
+    options.ModelCacheDirectory = modelDirectory;
 });
 
 WebApplication app =
