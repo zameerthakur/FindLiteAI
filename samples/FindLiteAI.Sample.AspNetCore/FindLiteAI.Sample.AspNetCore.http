@@ -7,6 +7,13 @@ Accept: application/json
 
 ###
 
+### FindLiteAI API Health Check
+
+GET {{FindLiteAI_HostAddress}}/api/findliteai/health
+Accept: application/json
+
+###
+
 ### Add Document - Login Failure
 
 POST {{FindLiteAI_HostAddress}}/api/findliteai/collections/logs/documents

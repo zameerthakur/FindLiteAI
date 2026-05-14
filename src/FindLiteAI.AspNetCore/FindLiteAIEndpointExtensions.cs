@@ -37,6 +37,15 @@ public static class FindLiteAIEndpointExtensions
         RouteGroupBuilder group =
             app.MapGroup(basePath);
 
+        group.MapGet(
+            "/health",
+            () => Results.Ok(
+                new
+                {
+                    status = "Healthy",
+                    service = "FindLiteAI"
+                }));
+
         group.MapPost(
             "/collections/{collection}/documents",
             async (
