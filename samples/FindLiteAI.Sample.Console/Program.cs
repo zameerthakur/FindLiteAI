@@ -1,8 +1,8 @@
 using FindLiteAI.Embeddings.Onnx;
 using Microsoft.Extensions.Logging.Abstractions;
 
-Console.WriteLine("FindLiteAI Model Package Sample");
-Console.WriteLine("--------------------------------");
+Console.WriteLine("FindLiteAI Model Package Validation Sample");
+Console.WriteLine("------------------------------------------");
 
 string cacheDirectory =
     Path.Combine(
@@ -11,26 +11,45 @@ string cacheDirectory =
         "Models");
 
 Console.WriteLine($"Cache directory: {cacheDirectory}");
+Console.WriteLine();
 
-string modelDirectory =
-    await ModelInstallService.InstallAsync(
-        FindLiteAIModels.MiniLm,
-        cacheDirectory,
-        overwrite: false);
+foreach (FindLiteAIModelDefinition model in FindLiteAIModels.GetAll())
+{
+    Console.WriteLine($"Testing model: {model.DisplayName}");
+    Console.WriteLine($"Profile: {model.Profile}");
 
-Console.WriteLine($"Model directory: {modelDirectory}");
+    string modelDirectory =
+        await ModelInstallService.InstallAsync(
+            model,
+            cacheDirectory,
+            overwrite: false);
 
-using OnnxEmbeddingProvider provider =
-    OnnxEmbeddingProviderFactory.FromInstalledModel(
-        FindLiteAIModels.MiniLm,
-        NullLogger<OnnxEmbeddingProvider>.Instance,
-        cacheDirectory,
-        maxTokenLength: 256,
-        warmupOnLoad: true);
+    Console.WriteLine($"Model directory: {modelDirectory}");
 
-IReadOnlyList<float> embedding =
-    await provider.GenerateEmbeddingAsync(
-        "SFTP authentication failed for remote user.");
+    using OnnxEmbeddingProvider provider =
+        OnnxEmbeddingProviderFactory.FromInstalledModel(
+            model,
+            NullLogger<OnnxEmbeddingProvider>.Instance,
+            cacheDirectory,
+            maxTokenLength: 256,
+            warmupOnLoad: true);
 
-Console.WriteLine($"Embedding dimensions: {embedding.Count}");
-Console.WriteLine($"First 5 values: {string.Join(", ", embedding.Take(5))}");
+    IReadOnlyList<float> embedding =
+        await provider.GenerateEmbeddingAsync(
+            "SFTP authentication failed for remote user.");
+
+    Console.WriteLine($"Embedding dimensions: {embedding.Count}");
+    Console.WriteLine($"Expected dimensions: {model.Dimensions}");
+    Console.WriteLine($"First 5 values: {string.Join(", ", embedding.Take(5))}");
+
+    if (embedding.Count != model.Dimensions)
+    {
+        throw new InvalidOperationException(
+            $"Model '{model.Id}' returned {embedding.Count} dimensions, expected {model.Dimensions}.");
+    }
+
+    Console.WriteLine("Status: OK");
+    Console.WriteLine();
+}
+
+Console.WriteLine("All FindLiteAI models validated successfully.");

@@ -79,12 +79,16 @@ public sealed class OnnxEmbeddingProvider : IEmbeddingProvider, IDisposable
 
                 NamedOnnxValue.CreateFromTensor(
                     "attention_mask",
-                    attentionMaskTensor),
-
-                NamedOnnxValue.CreateFromTensor(
-                    "token_type_ids",
-                    tokenTypeIdsTensor)
+                    attentionMaskTensor)
             ];
+
+            if (_session.InputMetadata.ContainsKey("token_type_ids"))
+            {
+                inputs.Add(
+                    NamedOnnxValue.CreateFromTensor(
+                        "token_type_ids",
+                        tokenTypeIdsTensor));
+            }
 
             using IDisposableReadOnlyCollection<DisposableNamedOnnxValue> results =
                 _session.Run(inputs);
