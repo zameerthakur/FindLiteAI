@@ -427,3 +427,45 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# ---------------------------------------
+# FindLiteAI
+# ---------------------------------------
+
+# LiteDB sample databases
+findliteai-*.db
+findliteai-*.db-log
+
+# Database side files
+*.db-shm
+*.db-wal
+
+# Downloaded local model caches
+FindLiteAI.Models/
+models/
+model-cache/
+
+# ONNX runtime model files downloaded locally
+*.onnx
+
+# Temporary extracted model packages
+.extract-*/
+
+# Sample runtime logs
+*.runtime.log
+
+# Local AI cache folders
+.cache/FindLiteAI/
+temp/FindLiteAI/
+
+# Generated package artifacts
+artifacts/packages/
+
+# Rider / JetBrains
+.idea/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
