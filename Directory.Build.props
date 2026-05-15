@@ -8,9 +8,11 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <AnalysisLevel>latest</AnalysisLevel>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <Authors>FindLiteAI Contributors</Authors>
-    <Company>FindLiteAI</Company>
+    <Authors>Zameer Hanif Thakur</Authors>
+    <Company>Zameer Hanif Thakur</Company>
     <Product>FindLiteAI</Product>
+    <Copyright>Copyright (c) 2026 Zameer Hanif Thakur</Copyright>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/zameerthakur/FindLiteAI</RepositoryUrl>
     <PackageProjectUrl>https://github.com/zameerthakur/FindLiteAI</PackageProjectUrl>
