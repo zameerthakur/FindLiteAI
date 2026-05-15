@@ -21,7 +21,7 @@ internal sealed class FakeSemanticSearchEngine : ISemanticSearchEngine
         Dictionary<string, SemanticDocument> documents =
             GetOrCreateCollection(collection);
 
-        documents[document.Id] = document;
+        documents[document.Id!] = document;
 
         return Task.CompletedTask;
     }
@@ -37,7 +37,7 @@ internal sealed class FakeSemanticSearchEngine : ISemanticSearchEngine
 
         foreach (SemanticDocument document in documents)
         {
-            targetCollection[document.Id] = document;
+            targetCollection[document.Id!] = document;
         }
 
         return Task.CompletedTask;

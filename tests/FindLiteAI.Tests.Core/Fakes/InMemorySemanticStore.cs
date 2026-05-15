@@ -19,7 +19,7 @@ internal sealed class InMemorySemanticStore : ISemanticStore
     {
         Dictionary<string, StoredItem> documents = GetOrCreateCollection(collection);
 
-        documents[document.Id] = new StoredItem(
+        documents[document.Id!] = new StoredItem(
             document,
             embedding);
 

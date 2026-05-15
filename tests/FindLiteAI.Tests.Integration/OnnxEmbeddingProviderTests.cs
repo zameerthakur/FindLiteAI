@@ -9,11 +9,14 @@ namespace FindLiteAI.Tests.Integration;
 /// </summary>
 public sealed class OnnxEmbeddingProviderTests
 {
-    private const string ModelPath =
-        @"D:\AIModels\FindLiteAI\all-MiniLM-L6-v2\model.onnx";
-
-    private const string VocabularyPath =
-        @"D:\AIModels\FindLiteAI\all-MiniLM-L6-v2\vocab.txt";
+    private static string CreateCacheDirectory()
+    {
+        return Path.Combine(
+            Path.GetTempPath(),
+            "FindLiteAI",
+            "Tests",
+            Guid.NewGuid().ToString("N"));
+    }
 
     /// <summary>
     /// Verifies that the ONNX embedding provider generates a 384-dimensional embedding.
@@ -21,7 +24,8 @@ public sealed class OnnxEmbeddingProviderTests
     [Fact]
     public async Task GenerateEmbeddingAsync_WhenUsingMiniLmModel_ShouldReturn384Dimensions()
     {
-        using OnnxEmbeddingProvider provider = CreateProvider();
+        using OnnxEmbeddingProvider provider =
+            await CreateProviderAsync();
 
         IReadOnlyList<float> embedding =
             await provider.GenerateEmbeddingAsync(
@@ -38,7 +42,8 @@ public sealed class OnnxEmbeddingProviderTests
     [Fact]
     public async Task GenerateEmbeddingAsync_WhenTextsAreDifferent_ShouldReturnDifferentVectors()
     {
-        using OnnxEmbeddingProvider provider = CreateProvider();
+        using OnnxEmbeddingProvider provider =
+            await CreateProviderAsync();
 
         IReadOnlyList<float> firstEmbedding =
             await provider.GenerateEmbeddingAsync(
@@ -61,7 +66,8 @@ public sealed class OnnxEmbeddingProviderTests
     [Fact]
     public async Task GenerateEmbeddingsAsync_WhenMultipleTextsAreProvided_ShouldReturnMatchingEmbeddingCount()
     {
-        using OnnxEmbeddingProvider provider = CreateProvider();
+        using OnnxEmbeddingProvider provider =
+            await CreateProviderAsync();
 
         IReadOnlyList<IReadOnlyList<float>> embeddings =
             await provider.GenerateEmbeddingsAsync(
@@ -77,21 +83,27 @@ public sealed class OnnxEmbeddingProviderTests
     }
 
     /// <summary>
-    /// Creates an ONNX embedding provider configured for the local extracted MiniLM model.
+    /// Creates an ONNX embedding provider configured from an installed MiniLM model package.
     /// </summary>
     /// <returns>
     /// A configured ONNX embedding provider.
     /// </returns>
-    private static OnnxEmbeddingProvider CreateProvider()
+    private static async Task<OnnxEmbeddingProvider> CreateProviderAsync()
     {
-        return new OnnxEmbeddingProvider(
-            new OnnxEmbeddingProviderOptions
-            {
-                ModelPath = ModelPath,
-                VocabularyPath = VocabularyPath,
-                MaxTokenLength = 256,
-                WarmupOnLoad = true
-            },
+        string cacheDirectory = CreateCacheDirectory();
+
+        await ModelInstallService.InstallAsync(
+            FindLiteAIModels.MiniLm,
+            cacheDirectory,
+            overwrite: false);
+
+        string modelDirectory =
+            Path.Combine(
+                cacheDirectory,
+                FindLiteAIModels.MiniLm.Id);
+
+        return OnnxEmbeddingProviderFactory.FromModelPackage(
+            modelDirectory,
             NullLogger<OnnxEmbeddingProvider>.Instance);
     }
 }

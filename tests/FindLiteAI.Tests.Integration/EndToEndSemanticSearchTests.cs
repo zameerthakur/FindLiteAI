@@ -3,6 +3,7 @@ using FindLiteAI.Core.Enums;
 using FindLiteAI.Core.Models;
 using FindLiteAI.Core.Options;
 using FindLiteAI.Core.Results;
+using FindLiteAI.Embeddings.Onnx;
 using FindLiteAI.Extensions.DependencyInjection;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,8 +15,14 @@ namespace FindLiteAI.Tests.Integration;
 /// </summary>
 public sealed class EndToEndSemanticSearchTests
 {
-    private const string ModelPath =
-        @"D:\AIModels\FindLiteAI\all-MiniLM-L6-v2\model.onnx";
+    private static string CreateCacheDirectory()
+    {
+        return Path.Combine(
+            Path.GetTempPath(),
+            "FindLiteAI",
+            "Tests",
+            Guid.NewGuid().ToString("N"));
+    }
 
     /// <summary>
     /// Verifies that documents can be indexed, persisted, embedded, and searched end-to-end.
@@ -27,15 +34,8 @@ public sealed class EndToEndSemanticSearchTests
             Path.GetTempPath(),
             $"findliteai-e2e-{Guid.NewGuid():N}.db");
 
-        ServiceCollection services = new();
-
-        services.AddFindLiteAI(options =>
-        {
-            options.DatabasePath = databasePath;
-            options.ModelPath = ModelPath;
-        });
-
-        using ServiceProvider provider = services.BuildServiceProvider();
+        await using ServiceProvider provider =
+            await CreateProviderAsync(databasePath);
 
         ISemanticSearchEngine engine =
             provider.GetRequiredService<ISemanticSearchEngine>();
@@ -89,7 +89,7 @@ public sealed class EndToEndSemanticSearchTests
             Path.GetTempPath(),
             $"findliteai-e2e-persist-{Guid.NewGuid():N}.db");
 
-        await using (ServiceProvider firstProvider = CreateProvider(databasePath))
+        await using (ServiceProvider firstProvider = await CreateProviderAsync(databasePath))
         {
             ISemanticSearchEngine firstEngine =
                 firstProvider.GetRequiredService<ISemanticSearchEngine>();
@@ -103,7 +103,8 @@ public sealed class EndToEndSemanticSearchTests
                 });
         }
 
-        await using ServiceProvider secondProvider = CreateProvider(databasePath);
+        await using ServiceProvider secondProvider =
+            await CreateProviderAsync(databasePath);
 
         ISemanticSearchEngine secondEngine =
             secondProvider.GetRequiredService<ISemanticSearchEngine>();
@@ -133,15 +134,27 @@ public sealed class EndToEndSemanticSearchTests
     /// <returns>
     /// A configured service provider.
     /// </returns>
-    private static ServiceProvider CreateProvider(
+    private static async Task<ServiceProvider> CreateProviderAsync(
         string databasePath)
     {
+        string cacheDirectory = CreateCacheDirectory();
+
+        await ModelInstallService.InstallAsync(
+            FindLiteAIModels.MiniLm,
+            cacheDirectory,
+            overwrite: false);
+
+        string modelDirectory =
+            Path.Combine(
+                cacheDirectory,
+                FindLiteAIModels.MiniLm.Id);
+
         ServiceCollection services = new();
 
         services.AddFindLiteAI(options =>
         {
             options.DatabasePath = databasePath;
-            options.ModelPath = ModelPath;
+            options.ModelCacheDirectory = modelDirectory;
         });
 
         return services.BuildServiceProvider();
