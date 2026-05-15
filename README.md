@@ -120,41 +120,111 @@ All models run locally using ONNX Runtime.
 
 ## Default Installation
 
-For most applications, install the main package:
+### Desktop Applications (WPF, WinForms, Console, Worker Services)
+
+For most desktop and general .NET applications, install the main package:
 
 ```bash
 dotnet add package FindLiteAI
 ```
 
-This is the recommended starting point for desktop, worker service, and general .NET applications.
+This package includes the core search engine and automatically installs the required ONNX embedding and LiteDB storage dependencies.
 
-## Optional Packages
+Suitable for:
 
-Install these only when you need direct access to a specific component or integration.
+- WPF applications
+- WinForms applications
+- Console applications
+- Worker Services
+- Background processing applications
+- Offline desktop tools
+- Local enterprise utilities
 
-ONNX embeddings:
+---
 
-```bash
-dotnet add package FindLiteAI.Embeddings.Onnx
-```
+### ASP.NET Core Applications
 
-LiteDB storage:
-
-```bash
-dotnet add package FindLiteAI.Storage.LiteDb
-```
-
-ASP.NET Core integration:
+For ASP.NET Core applications, install the ASP.NET integration package:
 
 ```bash
 dotnet add package FindLiteAI.AspNetCore
 ```
 
-Dependency injection helpers:
+This package includes:
+
+- FindLiteAI
+- ASP.NET Core endpoint integration
+- dependency injection extensions
+- required core dependencies
+
+Suitable for:
+
+- ASP.NET Core Web APIs
+- internal enterprise APIs
+- intranet systems
+- web-based knowledge systems
+- AI-powered search APIs
+
+---
+
+## Optional Packages
+
+Install these packages only if you need direct access to a specific component.
+
+### ONNX Embedding Provider
+
+```bash
+dotnet add package FindLiteAI.Embeddings.Onnx
+```
+
+Use when:
+
+- building custom embedding pipelines
+- using ONNX embeddings independently
+- creating custom search architectures
+
+---
+
+### LiteDB Storage Provider
+
+```bash
+dotnet add package FindLiteAI.Storage.LiteDb
+```
+
+Use when:
+
+- accessing the LiteDB storage provider directly
+- building custom persistence implementations
+- extending storage behavior
+
+---
+
+### Dependency Injection Extensions
 
 ```bash
 dotnet add package FindLiteAI.Extensions.DependencyInjection
 ```
+
+Use when:
+
+- configuring services manually
+- integrating with custom host architectures
+- building advanced dependency injection setups
+
+---
+
+### Core Abstractions and Models
+
+```bash
+dotnet add package FindLiteAI.Core
+```
+
+Use when:
+
+- building custom providers
+- implementing custom storage engines
+- creating alternative embedding providers
+- extending FindLiteAI internals
 
 # Quick Start
 
