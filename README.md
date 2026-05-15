@@ -1,10 +1,41 @@
 # FindLiteAI
 
+![Build](https://img.shields.io/github/actions/workflow/status/zameerthakur/FindLiteAI/ci.yml)
+![License](https://img.shields.io/github/license/zameerthakur/FindLiteAI)
+![NuGet](https://img.shields.io/nuget/v/FindLiteAI)
+![Downloads](https://img.shields.io/nuget/dt/FindLiteAI)
+
 Embedded offline AI-powered semantic, keyword, and hybrid search for .NET desktop and server applications.
 
 FindLiteAI is a lightweight offline-first search engine for .NET applications that enables semantic, keyword, and hybrid search without requiring Python, Docker, cloud APIs, external vector databases, or AI infrastructure.
 
 It is designed for developers who want practical AI-powered search inside ASP.NET Core, Worker Services, WPF, WinForms, desktop tools, intranet systems, enterprise applications, and offline environments.
+
+Designed for lightweight embedded AI retrieval scenarios where simplicity, offline capability, and low operational overhead are important.
+
+---
+
+## NuGet Packages
+
+- [FindLiteAI](https://www.nuget.org/packages/FindLiteAI)
+- [FindLiteAI.Core](https://www.nuget.org/packages/FindLiteAI.Core)
+- [FindLiteAI.Embeddings.Onnx](https://www.nuget.org/packages/FindLiteAI.Embeddings.Onnx)
+- [FindLiteAI.Storage.LiteDb](https://www.nuget.org/packages/FindLiteAI.Storage.LiteDb)
+- [FindLiteAI.Extensions.DependencyInjection](https://www.nuget.org/packages/FindLiteAI.Extensions.DependencyInjection)
+- [FindLiteAI.AspNetCore](https://www.nuget.org/packages/FindLiteAI.AspNetCore)
+
+---
+
+# Package Architecture
+
+| Package | Purpose |
+|---|---|
+| FindLiteAI.Core | Core abstractions and models |
+| FindLiteAI | Main search engine |
+| FindLiteAI.Embeddings.Onnx | ONNX embedding provider |
+| FindLiteAI.Storage.LiteDb | LiteDB storage provider |
+| FindLiteAI.Extensions.DependencyInjection | Dependency injection helpers |
+| FindLiteAI.AspNetCore | ASP.NET Core integration |
 
 ---
 
@@ -41,7 +72,7 @@ It provides:
 - Local ONNX embedding models
 - LiteDB embedded storage
 - ASP.NET Core integration
-- WPF desktop support
+- WPF desktop integration
 - Worker Service support
 - Automatic model package installation
 - No OpenAI dependency
@@ -65,11 +96,11 @@ It provides:
 
 # Built-In Models
 
-| Model | Profile | Dimensions |
-|---|---|---|
-| all-MiniLM-L6-v2 | Fast | 384 |
-| all-mpnet-base-v2 | Balanced | 768 |
-| Snowflake Arctic Embed XS | Advanced | 384 |
+| Model | Profile | Dimensions | Recommended RAM |
+|---|---|---|---|
+| all-MiniLM-L6-v2 | Fast | 384 | 4 GB+ |
+| all-mpnet-base-v2 | Balanced | 768 | 8 GB+ |
+| Snowflake Arctic Embed XS | Advanced | 384 | 8 GB+ |
 
 All models run locally using ONNX Runtime.
 
@@ -382,6 +413,22 @@ It is intentionally not:
 
 ---
 
+# Limitations
+
+FindLiteAI currently focuses on lightweight embedded retrieval scenarios.
+
+Current limitations include:
+
+- no distributed clustering
+- no GPU acceleration
+- no incremental model training
+- no built-in reranking models
+- no distributed vector database support
+
+The project intentionally prioritizes simplicity, portability, and local deployment.
+
+---
+
 # Roadmap
 
 Planned future improvements may include:
@@ -426,6 +473,8 @@ v0.1.0
 ```
 
 FindLiteAI is under active development.
+
+---
 
 # Open Source Credits
 
@@ -534,3 +583,12 @@ Used during development and related tooling workflows.
 ---
 
 FindLiteAI itself is released under the MIT License.
+
+---
+
+# Links
+
+- Repository: https://github.com/zameerthakur/FindLiteAI
+- NuGet: https://www.nuget.org/packages/FindLiteAI
+- ONNX Runtime: https://onnxruntime.ai
+- LiteDB: https://www.litedb.org
