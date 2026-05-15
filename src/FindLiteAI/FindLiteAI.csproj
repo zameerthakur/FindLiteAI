@@ -4,12 +4,20 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PackageId>FindLiteAI</PackageId>
+    <Title>FindLiteAI</Title>
+    <Description>
+      Embedded offline AI-powered semantic, keyword, and hybrid search engine for .NET desktop and server applications.
+    </Description>
+    <PackageTags>
+      ai;semantic-search;hybrid-search;keyword-search;offline-ai;onnx;vector-search;search-engine;dotnet;litedb
+    </PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions"
+                      Version="8.0.1" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\FindLiteAI.Core\FindLiteAI.Core.csproj" />
     <ProjectReference Include="..\FindLiteAI.Embeddings.Onnx\FindLiteAI.Embeddings.Onnx.csproj" />

@@ -4,12 +4,21 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PackageId>FindLiteAI.Extensions.DependencyInjection</PackageId>
+    <Title>FindLiteAI.Extensions.DependencyInjection</Title>
+    <Description>
+      Dependency injection registration helpers for FindLiteAI offline AI-powered semantic, keyword, and hybrid search.
+    </Description>
+    <PackageTags>
+      ai;dependency-injection;semantic-search;hybrid-search;keyword-search;offline-ai;search-engine;dotnet
+    </PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.7" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.7" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"
+                      Version="8.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging"
+                      Version="8.0.1" />
   </ItemGroup>
 
   <ItemGroup>

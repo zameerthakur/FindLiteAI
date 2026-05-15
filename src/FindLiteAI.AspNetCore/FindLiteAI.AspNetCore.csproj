@@ -4,13 +4,21 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PackageId>FindLiteAI.AspNetCore</PackageId>
+    <Title>FindLiteAI.AspNetCore</Title>
+    <Description>
+      ASP.NET Core Minimal API integration for FindLiteAI offline AI-powered semantic, keyword, and hybrid search.
+    </Description>
+    <PackageTags>
+      ai;aspnetcore;minimal-api;semantic-search;hybrid-search;keyword-search;offline-ai;search-engine;dotnet
+    </PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <ProjectReference Include="..\FindLiteAI.Core\FindLiteAI.Core.csproj" />
     <ProjectReference Include="..\FindLiteAI.Extensions.DependencyInjection\FindLiteAI.Extensions.DependencyInjection.csproj" />
     <ProjectReference Include="..\FindLiteAI\FindLiteAI.csproj" />
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
 </Project>

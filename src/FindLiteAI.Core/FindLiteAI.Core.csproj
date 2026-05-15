@@ -4,6 +4,14 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PackageId>FindLiteAI.Core</PackageId>
+    <Title>FindLiteAI.Core</Title>
+    <Description>
+      Core abstractions, models, contracts, and search primitives for FindLiteAI offline AI-powered semantic, keyword, and hybrid search.
+    </Description>
+    <PackageTags>
+      ai;semantic-search;hybrid-search;keyword-search;onnx;offline-ai;vector-search;search-engine;dotnet
+    </PackageTags>
   </PropertyGroup>
 
 </Project>
