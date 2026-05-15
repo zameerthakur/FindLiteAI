@@ -7,9 +7,9 @@
 
 Embedded offline AI-powered semantic, keyword, and hybrid search for .NET desktop and server applications.
 
-FindLiteAI is a lightweight offline-first search engine for .NET applications that enables semantic, keyword, and hybrid search without requiring Python, Docker, cloud APIs, external vector databases, or AI infrastructure.
+FindLiteAI is a lightweight, offline-first search engine for .NET applications, enabling semantic, keyword, and hybrid search without Python, Docker, cloud APIs, external vector databases, or AI infrastructure.
 
-It is designed for developers who want practical AI-powered search inside ASP.NET Core, Worker Services, WPF, WinForms, desktop tools, intranet systems, enterprise applications, and offline environments.
+It is built for developers who want practical AI-powered search inside ASP.NET Core, Worker Services, WPF, WinForms, desktop tools, intranet systems, enterprise applications, and offline environments.
 
 Designed for lightweight embedded AI retrieval scenarios where simplicity, offline capability, and low operational overhead are important.
 
@@ -17,12 +17,22 @@ Designed for lightweight embedded AI retrieval scenarios where simplicity, offli
 
 ## NuGet Packages
 
-- [FindLiteAI](https://www.nuget.org/packages/FindLiteAI)
-- [FindLiteAI.Core](https://www.nuget.org/packages/FindLiteAI.Core)
-- [FindLiteAI.Embeddings.Onnx](https://www.nuget.org/packages/FindLiteAI.Embeddings.Onnx)
-- [FindLiteAI.Storage.LiteDb](https://www.nuget.org/packages/FindLiteAI.Storage.LiteDb)
-- [FindLiteAI.Extensions.DependencyInjection](https://www.nuget.org/packages/FindLiteAI.Extensions.DependencyInjection)
-- [FindLiteAI.AspNetCore](https://www.nuget.org/packages/FindLiteAI.AspNetCore)
+Most developers should start with the main package:
+
+```bash
+dotnet add package FindLiteAI
+```
+
+The main `FindLiteAI` package includes the core engine and pulls in the required supporting packages for the default offline search setup.
+
+Package list:
+
+- [FindLiteAI](https://www.nuget.org/packages/FindLiteAI) — main package; start here
+- [FindLiteAI.Core](https://www.nuget.org/packages/FindLiteAI.Core) — core abstractions, models, and contracts
+- [FindLiteAI.Embeddings.Onnx](https://www.nuget.org/packages/FindLiteAI.Embeddings.Onnx) — ONNX embedding provider
+- [FindLiteAI.Storage.LiteDb](https://www.nuget.org/packages/FindLiteAI.Storage.LiteDb) — LiteDB embedded storage provider
+- [FindLiteAI.Extensions.DependencyInjection](https://www.nuget.org/packages/FindLiteAI.Extensions.DependencyInjection) — dependency injection helpers
+- [FindLiteAI.AspNetCore](https://www.nuget.org/packages/FindLiteAI.AspNetCore) — ASP.NET Core integration
 
 ---
 
@@ -30,12 +40,12 @@ Designed for lightweight embedded AI retrieval scenarios where simplicity, offli
 
 | Package | Purpose |
 |---|---|
-| FindLiteAI.Core | Core abstractions and models |
-| FindLiteAI | Main search engine |
-| FindLiteAI.Embeddings.Onnx | ONNX embedding provider |
-| FindLiteAI.Storage.LiteDb | LiteDB storage provider |
-| FindLiteAI.Extensions.DependencyInjection | Dependency injection helpers |
-| FindLiteAI.AspNetCore | ASP.NET Core integration |
+| FindLiteAI | Main package. Add this first for the default offline search engine setup. |
+| FindLiteAI.Core | Core abstractions, models, contracts, and search primitives. |
+| FindLiteAI.Embeddings.Onnx | ONNX-based embedding provider used for local AI embeddings. |
+| FindLiteAI.Storage.LiteDb | LiteDB-based embedded storage provider for documents and embeddings. |
+| FindLiteAI.Extensions.DependencyInjection | Dependency injection extensions for easy .NET application setup. |
+| FindLiteAI.AspNetCore | Optional ASP.NET Core integration for Minimal API search endpoints. |
 
 ---
 
@@ -108,13 +118,19 @@ All models run locally using ONNX Runtime.
 
 # Installation
 
-## NuGet Packages
+## Default Installation
 
-Core engine:
+For most applications, install the main package:
 
 ```bash
 dotnet add package FindLiteAI
 ```
+
+This is the recommended starting point for desktop, worker service, and general .NET applications.
+
+## Optional Packages
+
+Install these only when you need direct access to a specific component or integration.
 
 ONNX embeddings:
 
@@ -139,8 +155,6 @@ Dependency injection helpers:
 ```bash
 dotnet add package FindLiteAI.Extensions.DependencyInjection
 ```
-
----
 
 # Quick Start
 
