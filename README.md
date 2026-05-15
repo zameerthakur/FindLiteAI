@@ -7,9 +7,9 @@
 
 Embedded offline AI-powered semantic, keyword, and hybrid search for .NET desktop and server applications.
 
-FindLiteAI is a lightweight, offline-first search engine for .NET applications, enabling semantic, keyword, and hybrid search without Python, Docker, cloud APIs, external vector databases, or AI infrastructure.
+FindLiteAI is a lightweight, offline-first search engine for .NET applications that enables semantic, keyword, and hybrid search without Python, Docker, cloud APIs, external vector databases, or AI infrastructure.
 
-It is built for developers who want practical AI-powered search inside ASP.NET Core, Worker Services, WPF, WinForms, desktop tools, intranet systems, enterprise applications, and offline environments.
+It is designed for developers who want practical AI-powered search inside ASP.NET Core, Worker Services, WPF, WinForms, desktop tools, intranet systems, enterprise applications, and offline environments.
 
 Designed for lightweight embedded AI retrieval scenarios where simplicity, offline capability, and low operational overhead are important.
 
@@ -17,22 +17,12 @@ Designed for lightweight embedded AI retrieval scenarios where simplicity, offli
 
 ## NuGet Packages
 
-Most developers should start with the main package:
-
-```bash
-dotnet add package FindLiteAI
-```
-
-The main `FindLiteAI` package includes the core engine and pulls in the required supporting packages for the default offline search setup.
-
-Package list:
-
-- [FindLiteAI](https://www.nuget.org/packages/FindLiteAI) — main package; start here
-- [FindLiteAI.Core](https://www.nuget.org/packages/FindLiteAI.Core) — core abstractions, models, and contracts
-- [FindLiteAI.Embeddings.Onnx](https://www.nuget.org/packages/FindLiteAI.Embeddings.Onnx) — ONNX embedding provider
-- [FindLiteAI.Storage.LiteDb](https://www.nuget.org/packages/FindLiteAI.Storage.LiteDb) — LiteDB embedded storage provider
-- [FindLiteAI.Extensions.DependencyInjection](https://www.nuget.org/packages/FindLiteAI.Extensions.DependencyInjection) — dependency injection helpers
-- [FindLiteAI.AspNetCore](https://www.nuget.org/packages/FindLiteAI.AspNetCore) — ASP.NET Core integration
+- [FindLiteAI](https://www.nuget.org/packages/FindLiteAI)
+- [FindLiteAI.Core](https://www.nuget.org/packages/FindLiteAI.Core)
+- [FindLiteAI.Embeddings.Onnx](https://www.nuget.org/packages/FindLiteAI.Embeddings.Onnx)
+- [FindLiteAI.Storage.LiteDb](https://www.nuget.org/packages/FindLiteAI.Storage.LiteDb)
+- [FindLiteAI.Extensions.DependencyInjection](https://www.nuget.org/packages/FindLiteAI.Extensions.DependencyInjection)
+- [FindLiteAI.AspNetCore](https://www.nuget.org/packages/FindLiteAI.AspNetCore)
 
 ---
 
@@ -40,12 +30,12 @@ Package list:
 
 | Package | Purpose |
 |---|---|
-| FindLiteAI | Main package. Add this first for the default offline search engine setup. |
-| FindLiteAI.Core | Core abstractions, models, contracts, and search primitives. |
-| FindLiteAI.Embeddings.Onnx | ONNX-based embedding provider used for local AI embeddings. |
-| FindLiteAI.Storage.LiteDb | LiteDB-based embedded storage provider for documents and embeddings. |
-| FindLiteAI.Extensions.DependencyInjection | Dependency injection extensions for easy .NET application setup. |
-| FindLiteAI.AspNetCore | Optional ASP.NET Core integration for Minimal API search endpoints. |
+| FindLiteAI | Main search engine package (includes core dependencies) |
+| FindLiteAI.Core | Core abstractions, models, and contracts |
+| FindLiteAI.Embeddings.Onnx | ONNX-based embedding provider |
+| FindLiteAI.Storage.LiteDb | LiteDB-based embedded storage provider |
+| FindLiteAI.Extensions.DependencyInjection | Dependency injection extensions for easy setup |
+| FindLiteAI.AspNetCore | ASP.NET Core integration for search API endpoints |
 
 ---
 
@@ -101,6 +91,200 @@ It provides:
 | Semantic | Finds meaning-based matches using AI embeddings |
 | Keyword | Finds exact keyword matches |
 | Hybrid | Combines semantic and keyword ranking |
+
+---
+
+# Search Configuration
+
+FindLiteAI search behavior can be configured using `SearchOptions`.
+
+Example:
+
+```csharp
+IReadOnlyList<SearchResult> results =
+    await engine.SearchAsync(
+        "logs",
+        "smtp issue",
+        new SearchOptions
+        {
+            SearchMode = SearchMode.Hybrid,
+            MaxResults = 5,
+            MinimumScore = 0.10
+        });
+```
+
+---
+
+## SearchMode
+
+Controls how matching is performed.
+
+| Mode | Description | Best For |
+|---|---|---|
+| Semantic | AI meaning-based similarity search | Natural language queries |
+| Keyword | Exact keyword matching | IDs, logs, structured data |
+| Hybrid | Combines semantic + keyword ranking | General-purpose search |
+
+### Semantic
+
+```csharp
+SearchMode = SearchMode.Semantic
+```
+
+Uses AI embeddings to find meaning-based matches.
+
+Example:
+
+Stored document:
+
+```text
+SMTP authentication failed.
+```
+
+Search query:
+
+```text
+email login problem
+```
+
+Semantic search may still retrieve the document even without exact keyword matches.
+
+---
+
+### Keyword
+
+```csharp
+SearchMode = SearchMode.Keyword
+```
+
+Uses direct keyword matching.
+
+Best for:
+
+- log analysis
+- IDs
+- filenames
+- error codes
+- exact matching scenarios
+
+---
+
+### Hybrid
+
+```csharp
+SearchMode = SearchMode.Hybrid
+```
+
+Combines semantic similarity and keyword relevance.
+
+Recommended as the default mode for most applications.
+
+---
+
+## MaxResults
+
+Controls the maximum number of results returned.
+
+Example:
+
+```csharp
+MaxResults = 5
+```
+
+### Lower Values
+
+```csharp
+MaxResults = 3
+```
+
+Benefits:
+
+- faster responses
+- smaller payloads
+- cleaner UI presentation
+
+### Higher Values
+
+```csharp
+MaxResults = 25
+```
+
+Benefits:
+
+- broader retrieval
+- larger search coverage
+- analytics scenarios
+
+---
+
+## MinimumScore
+
+Controls the minimum similarity score required for results.
+
+Example:
+
+```csharp
+MinimumScore = 0.10
+```
+
+Higher values produce stricter and cleaner results.
+
+Lower values produce broader but potentially noisier results.
+
+### Typical Score Ranges
+
+| Score Range | Meaning |
+|---|---|
+| 0.80+ | Very strong match |
+| 0.60+ | Strong match |
+| 0.40+ | Moderate match |
+| 0.20+ | Weak semantic relation |
+| Below 0.10 | Often noisy or unrelated |
+
+Actual score behavior depends on:
+
+- embedding model
+- document quality
+- query quality
+- search mode
+- document length
+
+---
+
+## Recommended Starting Configuration
+
+### General Applications
+
+```csharp
+new SearchOptions
+{
+    SearchMode = SearchMode.Hybrid,
+    MaxResults = 5,
+    MinimumScore = 0.10
+}
+```
+
+### Enterprise Search
+
+```csharp
+new SearchOptions
+{
+    SearchMode = SearchMode.Hybrid,
+    MaxResults = 10,
+    MinimumScore = 0.25
+}
+```
+
+### Broad Discovery Search
+
+```csharp
+new SearchOptions
+{
+    SearchMode = SearchMode.Semantic,
+    MaxResults = 15,
+    MinimumScore = 0.05
+}
+```
 
 ---
 
@@ -177,27 +361,11 @@ Install these packages only if you need direct access to a specific component.
 dotnet add package FindLiteAI.Embeddings.Onnx
 ```
 
-Use when:
-
-- building custom embedding pipelines
-- using ONNX embeddings independently
-- creating custom search architectures
-
----
-
 ### LiteDB Storage Provider
 
 ```bash
 dotnet add package FindLiteAI.Storage.LiteDb
 ```
-
-Use when:
-
-- accessing the LiteDB storage provider directly
-- building custom persistence implementations
-- extending storage behavior
-
----
 
 ### Dependency Injection Extensions
 
@@ -205,26 +373,154 @@ Use when:
 dotnet add package FindLiteAI.Extensions.DependencyInjection
 ```
 
-Use when:
-
-- configuring services manually
-- integrating with custom host architectures
-- building advanced dependency injection setups
-
----
-
 ### Core Abstractions and Models
 
 ```bash
 dotnet add package FindLiteAI.Core
 ```
 
-Use when:
+---
 
-- building custom providers
-- implementing custom storage engines
-- creating alternative embedding providers
-- extending FindLiteAI internals
+# Custom Models
+
+FindLiteAI supports custom ONNX embedding models.
+
+Developers can use:
+
+- custom SentenceTransformer models
+- private enterprise embedding models
+- internally trained ONNX models
+- downloaded HuggingFace embedding models
+- organization-specific embedding models
+
+---
+
+# Built-In Model Definitions
+
+Built-in model metadata is defined in:
+
+```text
+src/FindLiteAI.Embeddings.Onnx/FindLiteAIModels.cs
+```
+
+This file contains:
+
+- model identifiers
+- dimensions
+- download URLs
+- tokenizer paths
+- runtime settings
+- package metadata
+
+Developers can use this file as a reference when adding custom models.
+
+---
+
+# Custom Model Package Structure
+
+A custom model package should contain:
+
+```text
+custom-model/
+├── model.onnx
+├── vocab.txt
+├── MODEL_INFO.json
+└── 1_Pooling/
+    └── config.json
+```
+
+Optional files:
+
+```text
+sentence_bert_config.json
+modules.json
+README_MODEL.txt
+LICENSE.txt
+```
+
+---
+
+# MODEL_INFO.json Example
+
+```json
+{
+  "id": "custom-model",
+  "displayName": "Custom Embedding Model",
+  "dimensions": 384,
+  "runtime": "ONNX",
+  "pooling": "Mean",
+  "optimizedFor": "Semantic Search"
+}
+```
+
+---
+
+# Hosting Custom Models
+
+Custom model packages can be distributed as ZIP files.
+
+Example:
+
+```text
+custom-model-v1.zip
+```
+
+Recommended hosting locations:
+
+- GitHub Releases
+- Azure Blob Storage
+- AWS S3
+- internal enterprise servers
+- intranet download servers
+- private package repositories
+
+---
+
+# GitHub Release Example
+
+Repository:
+
+```text
+https://github.com/company/custom-models/releases
+```
+
+ZIP asset:
+
+```text
+custom-model-v1.zip
+```
+
+Direct download URL example:
+
+```text
+https://github.com/company/custom-models/releases/download/v1/custom-model-v1.zip
+```
+
+---
+
+# Installing a Custom Model
+
+Extract the ZIP package locally.
+
+Example:
+
+```text
+D:\Models\custom-model
+```
+
+Then configure FindLiteAI:
+
+```csharp
+builder.Services.AddFindLiteAI(options =>
+{
+    options.DatabasePath = "findliteai.db";
+
+    options.ModelCacheDirectory =
+        @"D:\Models\custom-model";
+});
+```
+
+---
 
 # Quick Start
 
