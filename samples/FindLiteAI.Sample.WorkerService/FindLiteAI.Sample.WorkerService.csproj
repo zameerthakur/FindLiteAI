@@ -4,6 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
     <UserSecretsId>dotnet-FindLiteAI.Sample.WorkerService-33842dfc-111d-4b6f-9a89-27a0eab9257a</UserSecretsId>
   </PropertyGroup>
 

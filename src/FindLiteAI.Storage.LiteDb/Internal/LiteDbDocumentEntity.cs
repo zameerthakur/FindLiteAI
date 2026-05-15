@@ -52,9 +52,14 @@ internal sealed class LiteDbDocumentEntity
     /// A LiteDB persistence entity.
     /// </returns>
     public static LiteDbDocumentEntity Create(
-        SemanticDocument document,
+        SemanticDocument document,  
         IReadOnlyList<float> embedding)
     {
+        if (document.Id is null)
+        {
+            throw new ArgumentNullException(nameof(document.Id), "Document Id cannot be null.");
+        }
+
         return new LiteDbDocumentEntity
         {
             Id = document.Id,

@@ -1,3 +1,4 @@
+using System.Reflection.Metadata;
 using FindLiteAI.AspNetCore.Models;
 using FindLiteAI.Core.Abstractions;
 using FindLiteAI.Core.Exceptions;
@@ -332,7 +333,7 @@ public static class FindLiteAIEndpointExtensions
     {
         return new SearchResponse
         {
-            Id = result.Document.Id,
+            Id = result.Document.Id ?? string.Empty,
             Text = result.Document.Text,
             Metadata = result.Document.Metadata,
             Score = result.Score,
