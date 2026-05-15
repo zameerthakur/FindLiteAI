@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-test:
+    name: Build and Test
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore FindLiteAI.sln
+
+      - name: Build
+        run: dotnet build FindLiteAI.sln --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test FindLiteAI.sln --configuration Release --no-build --verbosity normal
