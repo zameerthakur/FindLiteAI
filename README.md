@@ -328,27 +328,35 @@ Suitable for:
 
 ### ASP.NET Core Applications
 
-For ASP.NET Core applications, install the ASP.NET integration package:
+For ASP.NET Core applications, install:
 
 ```bash
 dotnet add package FindLiteAI.AspNetCore
+dotnet add package FindLiteAI.Embeddings.Onnx
 ```
 
-This package includes:
+`FindLiteAI.AspNetCore` provides:
 
-- FindLiteAI
 - ASP.NET Core endpoint integration
+- API routing helpers
 - dependency injection extensions
-- required core dependencies
+- search endpoint support
 
-Suitable for:
+`FindLiteAI.Embeddings.Onnx` provides:
+
+- local ONNX embedding support
+- built-in model definitions
+- model installer APIs
+- embedding generation services
+
+This setup is recommended for:
 
 - ASP.NET Core Web APIs
-- internal enterprise APIs
-- intranet systems
-- web-based knowledge systems
-- AI-powered search APIs
-
+- enterprise intranet systems
+- local AI-powered search APIs
+- internal knowledge systems
+- offline enterprise applications
+  
 ---
 
 ## Optional Packages
