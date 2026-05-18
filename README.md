@@ -15,6 +15,28 @@ Designed for lightweight embedded AI retrieval scenarios where simplicity, offli
 
 ---
 
+# Architecture
+
+<p align="center">
+  <img
+    width="100%"
+    alt="FindLiteAI Architecture"
+    src="https://github.com/user-attachments/assets/75e7c6b4-0a1f-43c4-bdf6-20505f0be850" />
+</p>
+
+---
+
+# Architecture
+
+<p align="center">
+  <img
+    width="100%"
+    alt="Search Workflow"
+    src="https://github.com/user-attachments/assets/06c1e878-c81e-43b7-a788-be02aca2dbdb" />
+</p>
+
+---
+
 ## NuGet Packages
 
 - [FindLiteAI](https://www.nuget.org/packages/FindLiteAI)
