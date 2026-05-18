@@ -26,7 +26,7 @@ Designed for lightweight embedded AI retrieval scenarios where simplicity, offli
 
 ---
 
-# Architecture
+# Search Workflow
 
 <p align="center">
   <img
