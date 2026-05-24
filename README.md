@@ -11,29 +11,17 @@ FindLiteAI is a lightweight, offline-first search engine for .NET applications t
 
 It is designed for developers who want practical AI-powered search inside ASP.NET Core, Worker Services, WPF, WinForms, desktop tools, intranet systems, enterprise applications, and offline environments.
 
-Designed for lightweight embedded AI retrieval scenarios where simplicity, offline capability, and low operational overhead are important.
+Designed for lightweight embedded AI retrieval scenarios where simplicity, offline capability, and low operational overhead are )
 
 ---
 
-# Architecture
+## Architecture
 
-<p align="center">
-  <img
-    width="100%"
-    alt="FindLiteAI Architecture"
-    src="https://github.com/user-attachments/assets/75e7c6b4-0a1f-43c4-bdf6-20505f0be850" />
-</p>
+![FindLiteAI Architecture](https://github.com/user-attachments/assets/75e7c6b4-0a1f-43c4-bdf6-20505f0be850)
 
----
+## Search Workflow
 
-# Search Workflow
-
-<p align="center">
-  <img
-    width="100%"
-    alt="Search Workflow"
-    src="https://github.com/user-attachments/assets/06c1e878-c81e-43b7-a788-be02aca2dbdb" />
-</p>
+![Search Workflow](https://github.com/user-attachments/assets/06c1e878-c81e-43b7-a788-be02aca2dbdb)
 
 ---
 
