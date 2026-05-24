@@ -17,11 +17,11 @@ Designed for lightweight embedded AI retrieval scenarios where simplicity, offli
 
 ## Architecture
 
-![FindLiteAI Architecture](https://github.com/user-attachments/assets/75e7c6b4-0a1f-43c4-bdf6-20505f0be850)
+![FindLiteAI Architecture](https://raw.githubusercontent.com/zameerthakur/FindLiteAI/main/assets/images/findliteai-architecture.png)
 
 ## Search Workflow
 
-![Search Workflow](https://github.com/user-attachments/assets/06c1e878-c81e-43b7-a788-be02aca2dbdb)
+![FindLiteAI Search Workflow](https://raw.githubusercontent.com/zameerthakur/FindLiteAI/main/assets/images/findliteai-search-workflow.png)
 
 ---
 
