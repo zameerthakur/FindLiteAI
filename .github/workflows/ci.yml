@@ -8,6 +8,11 @@ on:
     branches:
       - main
 
+# Prevents redundant concurrent runs by canceling older builds in progress for the same branch/PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-test:
     name: Build and Test
